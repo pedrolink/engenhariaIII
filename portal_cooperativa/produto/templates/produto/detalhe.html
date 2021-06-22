@@ -31,7 +31,7 @@
                 {% endif %}
             </p>
 
-            <form action="/addtocart/" id="form-add-to-cart">
+            <form action="{% url 'produto:adicionarcarrinho'%}" id="form-add-to-cart">
                 <div class="form-group">
                     <select id="select-variacoes" name="vid" class="form-control form-control-lg">
 

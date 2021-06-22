@@ -12,7 +12,6 @@ class Perfil(models.Model):
     usuario = models.OneToOneField(
         User, on_delete=models.CASCADE, verbose_name='Usuário')
     data_nascimento = models.DateField()
-    email = models.EmailField(max_length=255)
     cpf = models.CharField(max_length=11)
     endereco = models.CharField(max_length=50, verbose_name='Endereço')
     numero = models.CharField(max_length=5, verbose_name='Número')
