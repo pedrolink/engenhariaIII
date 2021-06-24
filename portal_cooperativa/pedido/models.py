@@ -7,6 +7,7 @@ class Pedido(models.Model):
         User, on_delete=models.CASCADE, verbose_name='Usuário')
     id_fornecedor = models.PositiveIntegerField()
     total = models.FloatField()
+    qtd_total = models.PositiveIntegerField()
     observacao = models.TextField(max_length=255, verbose_name='Observação')
     status = models.CharField(
         default="C",
@@ -31,6 +32,8 @@ class ItemPedido(models.Model):
     produto_id = models.PositiveIntegerField()
     categoria = models.CharField(max_length=255)
     id_categoria = models.PositiveIntegerField()
+    variacao = models.CharField(max_length=255)
+    variacao_id = models.PositiveIntegerField()
     preco = models.FloatField(verbose_name='Preço')
     preco_promocional = models.FloatField(
         default=0, verbose_name='Preço Promocional')

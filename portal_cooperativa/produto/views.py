@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from . import models
 from pprint import pprint
+from perfil.models import Perfil
 
 
 class ListaProdutos(ListView):
@@ -13,6 +14,7 @@ class ListaProdutos(ListView):
     template_name = 'produto/lista.html'
     context_object_name = 'produtos'
     paginate_by = 10
+    ordering = ['-id']
 
 
 class DetalheProduto(DetailView):
@@ -153,4 +155,27 @@ class Carrinho(View):
 
 class ResumoCompra(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Finalizar')
+        if not self.request.user.is_authenticated:
+            return redirect('perfil:criar')
+
+        perfil = Perfil.objects.filter(usuario=self.request.user).exists()
+
+        if not perfil:
+            messages.error(
+                self.request,
+                'Usuário sem perfil.'
+            )
+            return redirect('perfil:criar')
+
+        if not self.request.session.get('carrinho'):
+            messages.error(
+                self.request,
+                'Seu carrinho está vazio.'
+            )
+            return redirect('produto:lista')
+
+        contexto = {
+            'usuario': self.request.user,
+            'carrinho': self.request.session['carrinho'],
+        }
+        return render(self.request, 'produto/resumo_compra.html', contexto)
