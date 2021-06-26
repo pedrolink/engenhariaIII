@@ -9,13 +9,6 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-
             {% if request.user.is_authenticated %}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -29,14 +22,21 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{% url 'pedido:lista' %}">Meus Pedidos</a>
                     <a class="dropdown-item" href="{% url 'perfil:criar' %}">Atualizar Dados de Usuário</a>
+
+                    {% if request.user.is_staff %}
+                    <a class="dropdown-item" href="http://127.0.0.1:8000/admin/">Painel Administrativo</a>
+                    {% endif %}
+
+                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{% url 'perfil:logout' %}">Sair</a>
-                    <!-- <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a> -->
                 </div>
             </li>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'perfil:criar' %}">Login | Cadastrar-se</a>
+                <a class="nav-link" href="{% url 'perfil:criar' %}">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'perfil:criar' %}">Cadastrar-se</a>
             </li>
             {% endif %}
 
@@ -56,9 +56,10 @@
             </li>
             {% endif %}
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'produto:busca' %}">
+            <input name="termo" value="{{request.GET.termo}}" class="form-control mr-sm-2" type="busca"
+                placeholder="Busca" aria-label="Busca">
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Busca</button>
         </form>
     </div>
 </nav>

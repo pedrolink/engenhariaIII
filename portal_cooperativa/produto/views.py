@@ -7,6 +7,7 @@ from django.contrib import messages
 from . import models
 from pprint import pprint
 from perfil.models import Perfil
+from django.db.models import Q
 
 
 class ListaProdutos(ListView):
@@ -15,6 +16,27 @@ class ListaProdutos(ListView):
     context_object_name = 'produtos'
     paginate_by = 10
     ordering = ['-id']
+
+
+class Busca(ListaProdutos):
+    def get_queryset(self, *args, **kwargs):
+        termo = self.request.GET.get('termo') or self.request.session['termo']
+        qs = super().get_queryset(*args, **kwargs)
+
+        if not termo:
+            return qs
+
+        self.request.session['termo'] = termo
+
+        qs = qs.filter(
+            Q(nome__icontains=termo) |
+            Q(descricao_curta__icontains=termo) |
+            Q(descricao_longa__icontains=termo)
+        )
+
+        self.request.session.save()
+
+        return qs
 
 
 class DetalheProduto(DetailView):
@@ -44,6 +66,8 @@ class AdicionarCarrinho(View):
         produto = variacao.produto
 
         produto_id = produto.id
+        produto_categoria = produto.categoria
+        produto_id_fornecedor = produto.id_fornecedor
         produto_nome = produto.nome
         variacao_nome = variacao.nome or ''
         preco_unitario = variacao.preco
@@ -91,6 +115,8 @@ class AdicionarCarrinho(View):
         else:
             carrinho[variacao_id] = {
                 'produto_id': produto_id,
+                'produto_categoria': produto_categoria,
+                'produto_id_fornecedor': produto_id_fornecedor,
                 'produto_nome': produto_nome,
                 'variacao_nome': variacao_nome,
                 'variacao_id': variacao_id,
