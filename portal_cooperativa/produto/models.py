@@ -5,6 +5,9 @@ import os
 from django.conf import settings
 from django.utils.text import slugify
 from utils import utils
+from django.contrib.auth.models import User
+from utils.validacnpj import valida_cnpj
+from django.forms import ValidationError
 
 
 class Categoria(models.Model):
@@ -12,6 +15,39 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nome
+
+
+class Fornecedor(models.Model):
+    usuario = models.OneToOneField(
+        User, on_delete=models.CASCADE, verbose_name='Usuário')
+    nome = models.CharField(max_length=255)
+    cnpj = models.CharField(max_length=14)
+
+    def __str__(self):
+        return self.nome
+
+    def clean(self):
+        error_messages = {}
+
+        cnpj_enviado = self.cnpj or None
+        cnpj_salvo = None
+        fornecedor = Fornecedor.objects.filter(cnpj=cnpj_enviado).first()
+
+        if fornecedor:
+            cnpj_salvo = fornecedor.cnpj
+
+            if cnpj_salvo is not None and self.pk != fornecedor.pk:
+                error_messages['cnpj'] = 'CNPJ já existe.'
+
+        if not valida_cnpj(self.cnpj):
+            error_messages['cnpj'] = 'Digite um CNPJ válido.'
+
+        if error_messages:
+            raise ValidationError(error_messages)
+
+    class Meta:
+        verbose_name = 'Fornecedor'
+        verbose_name_plural = 'Fornecedores'
 
 
 class Produto(models.Model):
@@ -34,7 +70,8 @@ class Produto(models.Model):
             ('S', 'Simples'),
         )
     )
-    id_fornecedor = models.PositiveIntegerField()
+    id_fornecedor = models.ForeignKey(
+        Fornecedor, on_delete=models.CASCADE, verbose_name='Usuário Fornecedor')
 
     def get_preco_formatado(self):
         return formata_preco(self.preco)

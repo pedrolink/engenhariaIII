@@ -66,8 +66,6 @@ class AdicionarCarrinho(View):
         produto = variacao.produto
 
         produto_id = produto.id
-        produto_categoria = produto.categoria
-        produto_id_fornecedor = produto.id_fornecedor
         produto_nome = produto.nome
         variacao_nome = variacao.nome or ''
         preco_unitario = variacao.preco
@@ -115,8 +113,6 @@ class AdicionarCarrinho(View):
         else:
             carrinho[variacao_id] = {
                 'produto_id': produto_id,
-                'produto_categoria': produto_categoria,
-                'produto_id_fornecedor': produto_id_fornecedor,
                 'produto_nome': produto_nome,
                 'variacao_nome': variacao_nome,
                 'variacao_id': variacao_id,
