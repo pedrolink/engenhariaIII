@@ -16,7 +16,6 @@ class UserForm(forms.ModelForm):
         required=False,
         widget=forms.PasswordInput(),
         label='Senha',
-        help_text='fazer depois'
     )
 
     password2 = forms.CharField(
