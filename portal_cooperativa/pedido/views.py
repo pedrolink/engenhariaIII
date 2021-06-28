@@ -139,3 +139,12 @@ class Lista(DispatchLoginRequiredMixin, ListView):
     template_name = 'pedido/lista.html'
     paginate_by = 10
     ordering = ['-id']
+
+
+class PedidoFinalizado(View):
+    def get(self, *args, **kwargs):
+        messages.success(
+            self.request,
+            'Pedido finalizado com sucesso! Acesse a aba meus pedidos para visualizar mais informações.'
+        )
+        return redirect('produto:lista')
