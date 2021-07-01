@@ -24,6 +24,8 @@
         </h3>
         <p>Abaixo todos os seus pedidos realizados na loja.</p>
 
+        {% if pedidos %}
+
         <div class="table-responsive">
             <table class="table table-striped">
                 <tr>
@@ -50,6 +52,17 @@
 
             </table>
         </div>
+        {% else %}
+        <div class="row">
+            <div class="col">
+                <b>
+                    <p>Você não tem nenhum pedido aberto, favor retorne a tela de produtos
+                        <a href="{%url 'produto:lista' %}">clicando aqui!</a>
+                    </p>
+                </b>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 
